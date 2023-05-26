@@ -1,0 +1,17 @@
+#include "intezos.jsligo"
+
+
+const default_storage: storage =
+  {
+    amount: 100000 as mutez,
+    receiver: "tz1Yj4FviaKEy6ER8ZDeiH2w2Lx8bapjuJEq" as address,
+    secret: {
+      question: "Do you like Paul",
+      encrypted_answer: Crypto.sha256(
+        Bytes.pack("yes he is awesome but encrypted")
+      ),
+      encryption_algorithm: "sha256"
+    },
+    sender: "tz1Yj4FviaKEy6ER8ZDeiH2w2Lx8bapjuJEq" as address,
+    pending: true
+  };

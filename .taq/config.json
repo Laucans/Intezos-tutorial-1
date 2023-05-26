@@ -51,5 +51,19 @@
             "label": "mainnet",
             "rpcUrl": "https://mainnet.api.tez.ie"
         }
-    }
+    },
+    "plugins": [
+        {
+            "type": "npm",
+            "name": "@taqueria/plugin-ligo"
+        },
+        {
+            "type": "npm",
+            "name": "@taqueria/plugin-taquito"
+        },
+        {
+            "type": "npm",
+            "name": "@taqueria/plugin-tezos-client"
+        }
+    ]
 }

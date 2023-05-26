@@ -1,0 +1,55 @@
+type secret = {
+  question: string, // Question which gonna be asked to receiver
+  encrypted_answer: bytes, // The expected answer
+  encryption_algorithm: string // The algorithm used for encryption
+};
+
+type storage = {
+  amount: tez, // The transfered amount (xtz)
+  sender: address, // Address of the sender (tzxxx)
+  receiver: address, // Address of the recipient (tzxxx)
+  secret, // Type secret
+  pending: bool // Is the has been already claimed or redeem ?
+};
+
+
+const encrypt = (value) => Crypto.sha256(Bytes.pack(value));
+
+const get_instanced_address_or_fail = <t>(address) =>
+  match(
+    /* To help the compiler here, you need to declare `as option<contract<t>>` */
+
+      (
+      Tezos.get_contract_opt(address) as option<contract<t>>
+    ),
+    {
+      Some: (contract) => contract,
+      None: () => (failwith("Not an existing address"))
+    }
+  );
+
+type claim_parameter = { answer: string };
+
+// @entry
+const claim = (parameter: claim_parameter, store: storage)
+  : [list<operation>, storage] => {
+  assert(
+    store.pending && Tezos.get_source() == store.receiver &&
+      encrypt(parameter.answer) == store.secret.encrypted_answer
+  );
+  const transferOperation: operation =
+    Tezos.transaction(
+      unit,
+      store.amount,
+      get_instanced_address_or_fail(store.receiver)
+    );
+  return [list([transferOperation]), { ...store, pending: false }]
+};
+
+// @entry
+const redeem = (_: unit, store: storage) => {
+  assert(store.pending && Tezos.get_source() == store.sender);
+  const transferOperation: operation =
+    Tezos.transaction(unit, store.amount, get_instanced_address_or_fail(store.sender));
+  return [list([transferOperation]), { ...store, pending: false }]
+};

@@ -1,7 +1,8 @@
 .DS_Store
-contract/artifacts
-contract/.taq/*-state.json
-contract/.taq/config.local.*.json
+artifacts
+.taq/*-state.json
+.taq/config.local.*.json
+node_modules/
 */node_modules/
 */dist/
 /.vscode/
