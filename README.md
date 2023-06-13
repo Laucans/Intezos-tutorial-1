@@ -1,5 +1,7 @@
 # Intezos
 
+To follow this tutorial, create a new repo, source are the correction. 
+
 ## Goal 
 Transfer crypto currency throught [interac e-transfer](https://www.interac.ca/en/consumers/products/interac-e-transfer/) process, using a secret question.
 
@@ -92,16 +94,16 @@ where :
 - storage is the state of the storage. The input is the current state of the storage, and it outputs the next state
 - list<operation> is a list of commands that will be executed by the block chain (for instance transfers…)
 
-Entrypoint are tag with the keyword // @entry
+Entrypoint are tag with the keyword @entry
 */
 
 
-// @entry
+@entry
 const increment = (delta : int, store : storage) : [list<operation>, storage] =>
 // Empty list mean there is no other invokation, the second element is the new state of the storage
   [list([]), store + delta];
 
-// @entry
+@entry
 const decrement = (delta : int, store : storage) : [list<operation>, storage] =>
   [list([]), store - delta];
 
@@ -110,7 +112,7 @@ The unit type in Michelson or LIGO is a predefined type that contains only one v
 
 Also _ which can be used as prefix of variable name like on _parameter, explain to compiler than this value is not used later. 
 */
-// @entry
+@entry
 const reset = (_parameter : unit, _storage : storage) : [list<operation>, storage] =>
   [list([]), 0];
 ```
@@ -221,7 +223,7 @@ Because the compiler can't infere list([]) as list<operation> alone.
 Note : if you want to remove return type from the signature and use the compiler inference it's also possible to do list([]) as list<operation> on the return line
 */
 
-// @entry
+@entry
 const claim = (_: unit, store: storage): [list<operation>, storage] => {
   // And we return empty operation and the new state of the store, copy of the current one with pending: false
   return [list([]), {...store, pending: false}]
@@ -313,7 +315,7 @@ Expressed with if statement :
 type claim_parameter = { answer: string };
 
 /* And pass it as parameter (first argument) */
-// @entry
+@entry
 const claim = (parameter: claim_parameter, store: storage): [list<operation>, storage] => {
   if(store.pending && Tezos.get_source() == store.receiver &&
       parameter.answer == store.secret.encrypted_answer)
@@ -361,7 +363,7 @@ Now you can see the state mutation !
 
 That's a first step but we can improve it with `assert` statement, the code is elegant and less expensive, for deployer and customer and can fail during the simulation instead of execution :
 ```typescript
-// @entry
+@entry
 const claim = (parameter: claim_parameter, store: storage): [list<operation>, storage] => {
   assert(
     store.pending && Tezos.get_source() == store.receiver &&
@@ -562,6 +564,8 @@ Don't forget to return the operation and new storage.
 # Next 
 Congrats ! The next step will be to integrate it into your first dApp
 
+
+### On futur tuto :
 # Integrate it with your first dApp
 
 - TODO talk about parameters which are unencrypted. if you want to secure, your dapp have to encode the passphrase then send it to the contract. Here you can remove the encryption. Less process onto the node, less expensive to run.

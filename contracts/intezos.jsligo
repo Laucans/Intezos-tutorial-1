@@ -30,7 +30,7 @@ const get_instanced_address_or_fail = <t>(address) =>
 
 type claim_parameter = { answer: string };
 
-// @entry
+@entry
 const claim = (parameter: claim_parameter, store: storage)
   : [list<operation>, storage] => {
   assert(
@@ -46,7 +46,7 @@ const claim = (parameter: claim_parameter, store: storage)
   return [list([transferOperation]), { ...store, pending: false }]
 };
 
-// @entry
+@entry
 const redeem = (_: unit, store: storage) => {
   assert(store.pending && Tezos.get_source() == store.sender);
   const transferOperation: operation =
