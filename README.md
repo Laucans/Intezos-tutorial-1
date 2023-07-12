@@ -5,80 +5,89 @@ To follow this tutorial, create a new repo, source are the correction.
 ## Goal 
 Transfer crypto currency throught [interac e-transfer](https://www.interac.ca/en/consumers/products/interac-e-transfer/) process, using a secret question.
 
-You send tokens to someone and lock them with a couple of question/answer. If the declared receiver can find the answer, so he can claim tokens, you still able to redeem the money if it has not been retrieved yet
+TL;DR You (sender) send tokens to someone (receiver) with a couplet of a question and it's answer (which is hidden). If the receiver's answer matches the one sent by you (sender), transfer is a success. If the answers don't match you (sender) get back the tokens.
 
-## Technologies
+## Languages used
 
-WebApp : Using Typescript (and your favorite framework)
+- Typescript : For writing webapp (backend + frontend) with your favorite frameworks.
 
-Contract : Using Ligo
+- Ligo : Writing the contract source files.
 
-# 1. Initialize repository
-## You will learn
-- What is Ligo
-- What is Taqueria
-- What is Taquito
-- What is octez-client
-- How to create a starter repository
-- Initialize a contract
+## Things that might be new 
 
-## Installation
-### Install octez-client
-You can download the binaries XXX-octez-client [here](https://gitlab.com/tezos/tezos/-/packages/13480737)
+The list of the following things might be new for anyone who doesn't have a background in creating dApps or contracts in the Tezos ecosystem. Please don't be afraid to ask questions about it if the current tutorial is unable to. You can use the issues section of github to tackle this problem.
 
-Or [with package manager follow](https://wiki.tezos.com/build/clients/installation-and-setup)
-### Install [node and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-
-Useful to develop your webapp, also used by taqueria.
-
-### Install [ligo](https://ligolang.org/docs/intro/installation?lang=jsligo)
-
-The langage to create smart contract on Tezos. [Ligo](https://ligolang.org/docs/intro/introduction?lang=jsligo) is a strongly typed and testable language with a low footprint which compile into [michelson](https://www.michelson.org/).  
-
-Michelson is the langage understood by [Tezos](https://tezos.com/).
-
-### Install [taqueria](https://taqueria.io/docs/getting-started/installation/)
-
-Improve development experience by managing development lifecycle with taqueria.
-Today Taqueria is a beta, mean buggy, so we will not use every features.
+- Ligo
+- Taqueria
+- Taquito
+- Using octez-client
+- Create a starter repository
+- Initializing a contract
 
 
-### Vscode plugin
+## Prerequistes
+The following cli tools should be installed in any order before we move forward with the tutorial
+- octez-client : You can download the binaries for octez-client-XXX[here](https://github.com/serokell/tezos-packaging/releases/tag/v17.1-1) or [with package manager follow](https://wiki.tezos.com/build/clients/installation-and-setup)
+- [Node and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) used in writing the frontend and backend of your web application. Also an important dependency for taqueria.
 
-To facilitate your experience, we recommand the usage of [ligo vscode plugin](https://marketplace.visualstudio.com/items?itemName=ligolang-publish.ligo-vscode)
+- [Ligo](https://ligolang.org/docs/intro/installation?lang=jsligo) to create smart contract on Tezos. [Ligo](https://ligolang.org/docs/intro/introduction?lang=jsligo) is a strongly typed, syntactically JS-like programming language with a low footprint which compiles to [michelson](https://www.michelson.org/) - the langage used by the [tezos](https://tezos.com/) chain.
+
+- [Taqueria](https://taqueria.io/docs/getting-started/installation/) which improves developer experience by managing development lifecycle. Currently taqueria is in beta (so it can have issues) and the current tutorial uses it cautiously and in specific places. If anyone faces any issues in this tutorial please create an issue [here](https://github.com/Laucans/Intezos-tutorial-1/issues) or in [taqueria's github issues](https://github.com/pinnacle-labs/taqueria/issues) tab. We would be happy to fix an issue asap.
+
+- [VSCode](https://code.visualstudio.com/Download) : we recommand using vscode since the lsp has first class support to the [ligo vscode plugin](https://marketplace.visualstudio.com/items?itemName=ligolang-publish.ligo-vscode) 
 
 ---
-## Startup
+## Let's start!
 
-```shell
+Create a directory/folder and initialize it with taqueria
+
+```bash
+mkdir -p /path/to/my-first-contract/
+cd /path/to/my-first-contract/
 taq init
 ```
 
-Let's explain a bit what is inside taq'ified folder (contracts) :
-- `.taq` : where [taqueria](https://taqueria.io/docs/) configuration file are
-- `artifacts` : Where your compiled [michelson](https://tezos.gitlab.io/active/michelson.html) will be generated
-- `contracts` : The folder where your contracts sources have to be.
+if you get this message
+```bash
+❯ taq init
+Project taq'ified!
+```
 
----
-## Initialize your first contract : 
-To plug taqueria with ligo let's install a plugin : 
-```shell
+To make ligo work well with taqueria we need to install a [plugin](https://taqueria.io/docs/plugins/plugin-ligo/), it might take sometime and not show anything on the terminal which is fine.
+```bash
 taq install @taqueria/plugin-ligo
 ```
 
-[This plugin](https://taqueria.io/docs/plugins/plugin-ligo/) provides tasks to work with LIGO smart contracts such as compiling and testing
+Lets run `ls -a` in the current directory to see what is inside (even hidden files)
+```
+❯ ls -a
+.  ..  artifacts  contracts  .gitignore  package.json  .taq
+```
+Lets go through the items that look scary and unfamilar :
+- `.taq` : contains [taqueria](https://taqueria.io/docs/) config files
+- `artifacts` : Stores the compile [michelson](https://tezos.gitlab.io/active/michelson.html) files (equivalent to a `_build/` in ocaml or other compiled languages)
+- `contracts` : This is place where we write `src` files that have `*.jsligo` or `*.mligo` which is like a `bin` directory in ocaml of `src` directory in other languages. These define the contract source files.
+  
+So `taq` command helps in scaffolding an easy to use directory structure for a beginner to start writing a contract.
+
+---
+## Initialize your first contract : 
 
 Run 
-```shell
+```bash
 taq create contract intezos.jsligo
 ```
 
-It should generate a file in contracts named `intezos.jsligo` filled with a template for a smart contract counter where 3 action are available :
+The above command creates a file `contracts/intezos.jsligo` which is a template for a smart contract counter with three 3 parameters :
 - Increase
 - Decrease
-- Reset 
+- Reset
 
-🚧 Taqueria is not up to date and this provided template is obsolete, the new one will be the code below, copy paste content to replace existing one 🚧
+And 2 entry points
+- add
+- sub
+
+🚧 Taqueria is not up to date and this provided template is not compatible with the latest ligo version, so it won't compile. It is unfortunate but if you want to check if everything works please use the following code. Thanks! 🚧
 ```typescript
 /*
  A type storage, representing stored data in you SC(smart contract)
@@ -117,12 +126,14 @@ const reset = (_parameter : unit, _storage : storage) : [list<operation>, storag
   [list([]), 0];
 ```
 
-Let's focus a bit on `unit` to bring a key notion of JSLigo and smart contract. 
+Let's focus a bit on the `unit` type. Understanding this type is important for understanding JSLigo and smart contracts. 
 In JsLIGO, the unique value of the unit type is unit.
 
-You can assimilate it to data type void/null value but that's not true unit is a defined value, defined as unit and can only be defined as unit. Why ? Because Ligo still a functionnal language
+You can associate with data type `void` or `null` in other languages but that's not true. Unit is defined as a type, similar to any functional language (OCaml, Haskell) which has only one term of the type `unit` called (unsurprisingly) `unit`. 
 
-Smart contract are pure state machine without side effect so they take an input state(parameter and storage), a function to apply (entrypoint) and return a new state. But they don't apply the state, that's the role of the chain.
+Why? Because ligo similar to ML-like languages only deals with expressions so every function has an input and an output and if the output or input types are not relevant it has to be a `unit` value to make sure the language compiles. Again very similar to `null` and `void` but not the same.
+
+Smart contracts are pure state machines without side effect so they take an input state(parameter and storage), a function to apply (entrypoint) and return a new state. They don't mutate the state in the contract that's the responsibility of the chain.
 
 ```mermaid
 sequenceDiagram
@@ -138,14 +149,13 @@ sequenceDiagram
 
 Now you can understand `unit` If something is empty for your state machine, it have to be replaced by unit value.
 
-
-.
+Now if the state is empty it needs to return `unit` value to keep the smart contract a pure state machine.
 
 
 
 # 2. First iteration on Intezos
-## You will learn
-- On Ligo : 
+## Overview
+- Ligo : 
   - Manage your storage, entrypoint and parameters
   - Using assertion in code
   - Do an operation, here transfer XTZ to a wallet.
@@ -155,16 +165,16 @@ Now you can understand `unit` If something is empty for your state machine, it h
   - What's sender and amount of an operation
   - Write and execute a test
   - Split your code
-- With taqueria
+- Taqueria
   - Deploy a contract through Taqueria
   - Simulate an execution
-- On tezos
+- Tezos
   - Import key generated by taqueria onto octez-client
   - Invoke contract with octez-client
   - What is an explorer and how to use it
 
 ## Scope
-Originate a contract containing X amount of XTZ which can be claim or redeem, securized with question and answer.
+Deploy a contract containing X amount of XTZ which can be claimed or redeemed. This amount should also contain a couplet of question and answer to check if the receiver is a legitimate receiver.
 
 - Claim: If you are the declared receiver you can ask your XTZ by invoking claim endpoint with the passphrase as parameter
 - Redeem: If you are the originator (creator of the SC) and the amount has not been claimed, you can redeem it.
