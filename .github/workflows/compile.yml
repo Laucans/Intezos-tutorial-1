@@ -1,0 +1,14 @@
+on: [push]
+
+jobs:
+  ligo-action:
+    runs-on: ubuntu-latest
+    name: Test action outputs version of ligo
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Test compilation
+        id: version
+        uses: laucans/ligo-action@main
+        with:
+          command: " install @ligo/fa"
