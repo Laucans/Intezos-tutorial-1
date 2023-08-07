@@ -1,0 +1,30 @@
+{
+  "name": "Intezos",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.4.2",
+    "@tsconfig/svelte": "^5.0.0",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
+    "sass": "^1.64.2",
+    "svelte": "^4.0.5",
+    "svelte-check": "^3.4.6",
+    "tslib": "^2.6.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "vite-compatible-readable-stream": "^3.6.1"
+  },
+  "dependencies": {
+    "@airgap/beacon-sdk": "^4.0.6",
+    "@taquito/beacon-wallet": "^17.1.1",
+    "@taquito/taquito": "^17.1.1"
+  }
+}
