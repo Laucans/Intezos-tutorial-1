@@ -568,14 +568,3 @@ Don't forget to return the operation and new storage.
 
 # Next 
 Congrats ! The next step will be to integrate it into your first dApp
-
-
-### On futur tuto :
-# Integrate it with your first dApp
-
-- TODO talk about parameters which are unencrypted. if you want to secure, your dapp have to encode the passphrase then send it to the contract. Here you can remove the encryption. Less process onto the node, less expensive to run.
-
-# Print a receipt, represented by a NFT
-
- 
-# Keep anonymous with sapling
