@@ -42,6 +42,11 @@ Michelson is the langage understood by [Tezos](https://tezos.com/).
 Improve development experience by managing development lifecycle with taqueria.
 Today Taqueria is a beta, mean buggy, so we will not use every features.
 
+Taqueria run ligo via docker, to use wished version run :  
+```shell
+# Replace $VERSION by the version targeted 
+export TAQ_LIGO_IMAGE=ligolang/ligo:$VERSION
+```
 
 ### Vscode plugin
 
