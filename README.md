@@ -440,13 +440,12 @@ Find the wallet from the address and if the address exist return it.
 If not interrupt the execution of the smart-contract.
 */
 
-  let receiverAddress = match(
-    (Tezos.get_contract_opt(store.receiver)),
+  const receiverAddress = match
+    (Tezos.get_contract_opt(store.receiver))
     {
-      Some: (contract) => contract,
-      None: () => (failwith("Not an existing address"))
-    }
-  );
+      when(Some(contract)): contract
+      when(None()): failwith("Not an existing address")
+    };
 
   /* Create operation describing the transfer of the amount into the wallet
   Like explained in doc, To indicate an account, use unit as first parameter.
@@ -461,14 +460,15 @@ We will need to find a wallet for redeem entry to, let's factorize it a bit usin
 ```typescript
 /* To define a generic function use diamond operator '<>' */
 const get_instanced_address_or_fail = <t>(address) =>
-  match(
+  match
     /* To help the compiler here, you need to declare `as option<contract<t>>` */
-    (Tezos.get_contract_opt(address) as option<contract<t>>),
+    (
+      Tezos.get_contract_opt(address) as option<contract<t>>
+    )
     {
-      Some: (contract) => contract,
-      None: () => (failwith("Not an existing address"))
-    }
-  );
+      when(Some(contract)): contract
+      when(None()): (failwith("Not an existing address"))
+    };
 ```
 Now you can simplify claim entrypoint with :
 ```typescript

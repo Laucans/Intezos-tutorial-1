@@ -16,17 +16,15 @@ type storage = {
 const encrypt = (value) => Crypto.sha256(Bytes.pack(value));
 
 const get_instanced_address_or_fail = <t>(address) =>
-  match(
+  match
     /* To help the compiler here, you need to declare `as option<contract<t>>` */
-
-      (
+    (
       Tezos.get_contract_opt(address) as option<contract<t>>
-    ),
+    )
     {
-      Some: (contract) => contract,
-      None: () => (failwith("Not an existing address"))
-    }
-  );
+      when(Some(contract)): contract
+      when(None()): (failwith("Not an existing address"))
+    };
 
 type claim_parameter = { answer: string };
 
