@@ -301,7 +301,7 @@ const default_storage: storage =
 ```
 Now you can trigger your dry-run like this :
 ```shell
-ligo run dry-run contracts/intezos.runner.jsligo 'unit' 'default_storage' --entry-point claim
+ligo run dry-run contracts/intezos.runner.jsligo 'Claim(unit)' 'default_storage'
 ```
 
 We will now try to understand the answer of the `dry-run` command : 
@@ -348,7 +348,7 @@ const claim_bad_answer_parameter: claim_parameter =
 
 Then you can dry-run : 
 ```shell
-ligo run dry-run contracts/intezos.runner.jsligo 'claim_default_parameter' 'default_storage' --entry-point claim
+ligo run dry-run contracts/intezos.runner.jsligo 'Claim(claim_default_parameter)' 'default_storage'
 ```
 Oh, the `pending` value is `true`, so the condition is evaluate to `false` !
 Yes because you are on dry-run, so the context provided by the blockchain doesn't exist
@@ -359,10 +359,10 @@ There is 4 values provided by tezos :
 - `sender` : the address which trigger the transaction (can be a smart contract, addres of smart contract are prefixed by `KT` )
 - `source` : the wallet who originate the contract (can only be a wallet, address of wallet are prefixed by `tz`)
 
-Now we want to mock sender value, to do it you can use the flag `--sender`
+Now we want to mock source value, to do it you can use the flag `--source`
 
 ```shell
-ligo run dry-run contracts/intezos.runner.jsligo 'claim_default_parameter' 'default_storage' --entry-point claim --sender 'tz1Yj4FviaKEy6ER8ZDeiH2w2Lx8bapjuJEq'
+ligo run dry-run contracts/intezos.runner.jsligo 'Claim(claim_default_parameter)' 'default_storage' --source 'tz1Yj4FviaKEy6ER8ZDeiH2w2Lx8bapjuJEq'
 ```
 Now you can see the state mutation !
 
@@ -536,7 +536,7 @@ octez-client import secret key taq_deployer unencrypted:<PRIVATEKEY>
 ```
 Your endpoint need parameter, the parameter have to be valid michelson. You can use to compile your parameter
 ```bash
-ligo compile parameter contracts/intezos.jsligo -e claim '{answer: "yes he is awesome but encrypted" }'
+ligo compile parameter contracts/intezos.jsligo 'Claim({answer: "yes he is awesome but encrypted" })'
 ```
 Result is a string, because a string value alone is a string in michelson, but if your parameter is complex, you should use the command
 
