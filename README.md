@@ -282,7 +282,7 @@ Let's do some software engineering to have a better way to run dry-run.
 
 Create a new file `intezos.runner.jsligo` it will be a wrapper around your test to declare some tests data.
 ```typescript
-// Start by import intezos.jsligo into your runner
+// Start by integrate intezos.jsligo into your runner
 #include "./intezos.jsligo"
 
 // Then define a constant corresponding to your initial storage
@@ -567,4 +567,4 @@ Don't forget to return the operation and new storage.
 
 
 # Next 
-Congrats ! The next step will be to integrate it into your first dApp
+Congrats ! The next step will be to refactor the contract to make it reusable !
