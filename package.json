@@ -1,7 +1,7 @@
 {
   "name": "contract",
   "version": "1.0.0",
-  "description": "",
+  "description": "To follow this tutorial, create a new repo, source are the correction.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +10,5 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-
   }
 }
