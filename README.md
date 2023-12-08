@@ -40,13 +40,6 @@ Michelson is the langage understood by [Tezos](https://tezos.com/).
 ### Install [taqueria](https://taqueria.io/docs/getting-started/installation/)
 
 Improve development experience by managing development lifecycle with taqueria.
-Today Taqueria is a beta, mean buggy, so we will not use every features.
-
-Taqueria run ligo via docker, to use wished version run :  
-```shell
-# Replace $VERSION by the version targeted 
-export TAQ_LIGO_IMAGE=ligolang/ligo:$VERSION
-```
 
 ### Vscode plugin
 
@@ -246,6 +239,10 @@ ligo compile contract contracts/intezos.jsligo -o artifacts/intezos.tz
 ```
 Now you can open the `artifacts/intezos.tz` file and see the produced michelson
 
+It is also possible to use taqueria :
+```shell
+taq compile intezos.jsligo
+```
 
 ### Let's simulate the code to test it now : 
 
