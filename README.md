@@ -1,49 +1,36 @@
 # Intezos
 
-To follow this tutorial, create a new repo, source are the correction. 
+To follow this tutorial, create a new repo. The full correction code can be found in the `contracts_final` folder.
 
 ## Goal 
 Transfer crypto currency throught [interac e-transfer](https://www.interac.ca/en/consumers/products/interac-e-transfer/) process, using a secret question.
-
-You send tokens to someone and lock them with a couple of question/answer. If the declared receiver can find the answer, so he can claim tokens, you still able to redeem the money if it has not been retrieved yet
+You send tokens to someone and lock them with a couple of question/answer. The declared receiver can then claim the tokens by providing the answer, or you can redeem the tokens.
 
 ## Technologies
-
-WebApp : Using Typescript (and your favorite framework)
-
+WebApp : Using TypeScript (and your favorite framework)
 Contract : Using Ligo
 
-# 1. Initialize repository
+# 1. Setup
 ## You will learn
-- What is Ligo
-- What is Taqueria
-- What is Taquito
-- What is octez-client
+- What tools to use: Ligo, Taqueria, Taquito, and `octez-client`
 - How to create a starter repository
-- Initialize a contract
+- How to initialize a contract
 
 ## Installation
-### Install octez-client
-You can download the binaries XXX-octez-client [here](https://gitlab.com/tezos/tezos/-/packages/13480737)
+### Install [`octez-client`](https://docs.tezos.com/developing/octez-client/installing)
+You can download the `octez-client` binary either directly from [the Tezos repo](https://gitlab.com/tezos/tezos/-/packages/13480737) or using [a package manager](https://docs.tezos.com/developing/octez-client/installing).
 
-Or [with package manager follow](https://wiki.tezos.com/build/clients/installation-and-setup)
-### Install [node and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+### Install [Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+Useful to develop your webapp, also used by Taqueria.
 
-Useful to develop your webapp, also used by taqueria.
+### Install [Ligo](https://ligolang.org/docs/intro/installation?lang=jsligo)
+[Ligo](https://ligolang.org/docs/intro/introduction?lang=jsligo) is a high-level strongly typed programming language that allows writing contracts for the Tezos blockchain, testing them, and compiling them to [Michelson](https://www.michelson.org/), the low-level language that executes on the [Tezos](https://tezos.com/) blockchain. 
 
-### Install [ligo](https://ligolang.org/docs/intro/installation?lang=jsligo)
-
-The langage to create smart contract on Tezos. [Ligo](https://ligolang.org/docs/intro/introduction?lang=jsligo) is a strongly typed and testable language with a low footprint which compile into [michelson](https://www.michelson.org/).  
-
-Michelson is the langage understood by [Tezos](https://tezos.com/).
-
-### Install [taqueria](https://taqueria.io/docs/getting-started/installation/)
-
-Improve development experience by managing development lifecycle with taqueria.
+### Install [Taqueria](https://taqueria.io/docs/getting-started/installation/)
+[Taqueria](https://taqueria.io/) improves development experience by managing the development lifecycle.
 
 ### Vscode plugin
-
-To facilitate your experience, we recommand the usage of [ligo vscode plugin](https://marketplace.visualstudio.com/items?itemName=ligolang-publish.ligo-vscode)
+We recommend using [Ligo vscode plugin](https://marketplace.visualstudio.com/items?itemName=ligolang-publish.ligo-vscode).
 
 ---
 ## Startup
@@ -52,31 +39,28 @@ To facilitate your experience, we recommand the usage of [ligo vscode plugin](ht
 taq init
 ```
 
-Let's explain a bit what is inside taq'ified folder (contracts) :
-- `.taq` : where [taqueria](https://taqueria.io/docs/) configuration file are
-- `artifacts` : Where your compiled [michelson](https://tezos.gitlab.io/active/michelson.html) will be generated
-- `contracts` : The folder where your contracts sources have to be.
+A taq'ified folder contains the following subfolders:
+- `.taq` contains [Taqueria](https://taqueria.io/docs/) configuration files are;
+- `artifacts` is where your compiled [Michelson](https://tezos.gitlab.io/active/michelson.html) will be generated;
+- `contracts` is where your contracts sources have to be.
 
 ---
-## Initialize your first contract : 
+## Initializing your first contract :
 To plug taqueria with ligo let's install a plugin : 
 ```shell
 taq install @taqueria/plugin-ligo
 ```
-
-[This plugin](https://taqueria.io/docs/plugins/plugin-ligo/) provides tasks to work with LIGO smart contracts such as compiling and testing
-
-Run 
+[The Ligo plugin for Taqueria](https://taqueria.io/docs/plugins/plugin-ligo/) provides tasks to work with Ligo smart contracts such as compiling and testing.
+Run  
 ```shell
 taq create contract intezos.jsligo
-```
-
+```  
 It should generate a file in contracts named `intezos.jsligo` filled with a template for a smart contract counter where 3 action are available :
-- Increase
-- Decrease
-- Reset 
+- `Increase`,
+- `Decrease`,
+- `Reset`.
 
-🚧 Taqueria is not up to date and this provided template is obsolete, the new one will be the code below, copy paste content to replace existing one 🚧
+🚧 Taqueria is not up to date and this provided template is obsolete. The new one will be the code below, that should should copy paste into your `intezos.jsligo` file. 🚧
 ```typescript
 /*
  A type storage, representing stored data in you SC(smart contract)
@@ -116,72 +100,66 @@ const reset = (_parameter : unit, _storage : storage) : [list<operation>, storag
 ```
 
 Let's focus a bit on `unit` to bring a key notion of JSLigo and smart contract. 
-In JsLIGO, the unique value of the unit type is unit.
-
-You can assimilate it to data type void/null value but that's not true unit is a defined value, defined as unit and can only be defined as unit. Why ? Because Ligo still a functionnal language
-
-Smart contract are pure state machine without side effect so they take an input state(parameter and storage), a function to apply (entrypoint) and return a new state. But they don't apply the state, that's the role of the chain.
+In JsLIGO, the unique value of the `unit` type is `[]`.
+It can be used similarly to the void/null types from other languages (e.g. as the return type of a function that does not return anything), but has a slightly different interpretation: it is considered as a defined value.
+A smart contract is a pure state machine without side effect. Possible state transitions are represented by functions called entrypoints that take in the current state along with some parameters, and return a new state. These transitions can then be applied (by anyone, unless specific precautions are taken) to change the state of the contract on the blockchain.
 
 ```mermaid
 sequenceDiagram
-  Note left of Wallet tzxxx : Wallet are address prefixed by tz
-  Wallet tzxxx->>Tezos chain: Call smart contract identified by address(KTxxx), provide parameters(michelson expression) and function to apply(entrypoint name)
+  Note left of Wallet tzxxx : Wallet are addresses prefixed by tz
+  Wallet tzxxx->>Tezos chain: Call smart contract identified by address(KTxxx), applying the chosen entrypoint (state-modifying function) with the given parameters (Michelson expression)
   Tezos chain->>Tezos chain: Retrieve current storage state
-  Tezos chain->>SmartContract KTxxx: Provide initial state (parameter and storage) and function to apply (entrypoint)
+  Tezos chain->>SmartContract KTxxx: Provide initial storage, entrypoint to apply, and parameters to pass to it
   SmartContract KTxxx->>SmartContract KTxxx: Calculate new state
-  SmartContract KTxxx->>Tezos chain: return output state composed by a list of operation and a storage
+  SmartContract KTxxx->>Tezos chain: Return a list of operation and the new content of the storage
   Tezos chain->>Tezos chain: Mutate storage state
-  Note right of Tezos chain: If another operation is provided, Tezos will call it like explained.
+  Note right of Tezos chain: This process repeats for each operation in the returned list of operations
 ```
 
-Now you can understand `unit` If something is empty for your state machine, it have to be replaced by unit value.
-
-
-.
-
-
+There are two main uses of `unit`:
+  - an entrypoint whose parameter type is `unit` is simply an entrypoint that does not take any argument; and
+  - a contract with storage type `unit` is a contract that does not store anything.
 
 # 2. First iteration on Intezos
 ## You will learn
-- On Ligo : 
+- In Ligo, you will learn how to : 
   - Manage your storage, entrypoint and parameters
-  - Using assertion in code
-  - Do an operation, here transfer XTZ to a wallet.
+  - Use assertions in code
+  - Execute an operation (namely transfer XTZ to a wallet)
   - `<>` operator for genericity 
-  - Deal with built-in function
-  - What's balance and source of a contract
-  - What's sender and amount of an operation
+  - Use built-in function
+  - What is `balance` and `source` of a contract
+  - What is `sender` and `amount` of an operation
   - Write and execute a test
   - Split your code
-- With taqueria
+-  With taqueria, you will learn how to:
   - Deploy a contract through Taqueria
   - Simulate an execution
-- On tezos
-  - Import key generated by taqueria onto octez-client
-  - Invoke contract with octez-client
-  - What is an explorer and how to use it
+- On tezos, you will learn how to:
+  - Import key generated by Taqueria onto `octez-client`
+  - Invoke contract with `octez-client`
+  - Use explorers
 
 ## Scope
-Originate a contract containing X amount of XTZ which can be claim or redeem, securized with question and answer.
-
+Originate a contract containing X amount of XTZ which can be claimed or redeemed, secured with question and answer.
 - Claim: If you are the declared receiver you can ask your XTZ by invoking claim endpoint with the passphrase as parameter
 - Redeem: If you are the originator (creator of the SC) and the amount has not been claimed, you can redeem it.
 
-## Clean to start a new project
-We will start a Intezos from scratch so remove the generated template in `intezos.jsligo`
+## Cleaning to start a new project
+We will start Intezos from scratch so remove the generated template in `intezos.jsligo`.
 
-## Define the storage
+## Defining the storage
 
-We will now define the storage type of our contract. Storage is the datas stored into your smart-contract, so on chain. When you'll deploy your contract you will pay for it, so keep it as light as possible and use it only for data which gain to be in blockchain.
+We will now define the storage type of our contract. Storage is the data stored in your smart-contract, on the blockchain. When deploying your contract, you will pay for the space required by the storage, so keep it as light as possible and only use it only for data that profits from being on the blockchain.
 
 ```typescript
 type storage = { 
-  amount: tez, // The transfered amount (xtz)
+  amount: tez, // The transferred amount (xtz)
   sender: address, // Address of the sender (tzxxx)
   receiver: address, // Address of the recipient (tzxxx)
-  question: string, // Question which gonna be asked to receiver
+  question: string, // Question that the receiver needs to answer
   encrypted_answer: string, // The expected answer
-  pending: bool // Is the has been already claimed or redeem ?
+  pending: bool // Can the funds still be claimed or redeemed?
 };
 ```
 
@@ -189,7 +167,7 @@ As you can see storage is defined through a type. for better comprehension it's 
 
 ```typescript
 type secret = {
-  question: string, // Question which gonna be asked to receiver
+  question: string, // Question that the receiver needs to answer
   encrypted_answer: string // The expected answer
 };
 
@@ -198,38 +176,35 @@ type storage = {
   sender: address, // Address of the sender (tzxxx)
   receiver: address, // Address of the recipient (tzxxx)
   secret: secret, // Type secret
-  pending: bool // True while the amount has not been claimed or redeemed
+  pending: bool // Can the funds still be claimed or redeemed?
 };
 ```
 
-Storage defined, we want to interact with it by executing some invokable code on the blockchain. 
+Now that the storage is defined, we want to interact with it by executing some invokable code on the blockchain. 
+ 
+## Defining an entrypoint
 
-## Define the entrypoint
-
-Let's create your first entrypoint, goal is to switch pending value to `false` when claim has been invoked :
-
+Let's create a first entrypoint that switches the `pending` value to `false` when `claim` has been invoked :
 ```typescript
-/* 
-Like explained before, annotation @entry to declare the method as a contract entrypoint, 2 args :
-- parameters -> _ : unit because we don't manage any parameter for now
-- store -> The status of the storage before execution of the script
-
-And the return type have to be in signature here : 
-- : [list<operation>, storage]
-Because the compiler can't infere list([]) as list<operation> alone. 
-
-Note : if you want to remove return type from the signature and use the compiler inference it's also possible to do list([]) as list<operation> on the return line
-*/
-
 @entry
 const claim = (_: unit, store: storage): [list<operation>, storage] => {
-  // And we return empty operation and the new state of the store, copy of the current one with pending: false
   return [list([]), {...store, pending: false}]
 };
 ```
+We use an annotation `@entry` to declare the method as a contract entrypoint, and it has two arguments:
+- The first argument represents the parameters passed to the entrypoint, `_ : unit` here because we don't manage any parameter for now.
+- The second argument `store : storage` is the state of the storage before execution of the script.
+This entrypoint returns a pair containing:
+- an empty list of operation `list([]) : list<operation>`; and
+- a copy of the current state `store` with the `pending` field set to `false`.
 
-### Let's verify your code compile : 
-When you compile using ligo it'll produce michelson (langage understand by tezos) on the standard output
+Because the compiler can't infere list([]) as list<operation> alone. 
+
+Note: The compiler can not infer what type the empty list has, and we therefore have to help it, either by specifying the return type of the entrypoint `[list<operation>, storage]` as done above, or by using `list([]) as list<operation>` in place of `list([])`.
+
+
+### Checking that the code compile
+When you compile using the `ligo` command, it'll produce a corresponding Michelson (langage understood by the Tezos blockchain) program on the standard output:
 ```shell
 ligo compile contract contracts/intezos.jsligo 
 ```
@@ -237,18 +212,18 @@ To save the produced code, use `-o` flag
 ```shell
 ligo compile contract contracts/intezos.jsligo -o artifacts/intezos.tz
 ```
-Now you can open the `artifacts/intezos.tz` file and see the produced michelson
+Now you can open the `artifacts/intezos.tz` file and see the produced Michelson is.
 
-It is also possible to use taqueria :
+It is also possible to use Taqueria :
 ```shell
 taq compile intezos.jsligo
 ```
 
-### Let's simulate the code to test it now : 
+### Simulating execution to test the contact
 
-To simulate your contract, you need to initialize the context (here the storage) and prepare call simulation, with parameters and entrypoint. 
+To simulate your contract, you need to initialize the context (here, the storage) and prepare call simulation, with an entrypoint and its parameters. 
 
-With `ligo run dry-run` we will provide an input state(parameter, storage) and an action to perform(entrypoint). Then the ligo-compiler using Michelson-interpreter will generate the output state.
+With `ligo run dry-run` we will provide an input state (storage), an action to perform (entrypoint and parameters). Then the Ligo compiler, using a Michelson-interpreter, will generate the output state.
 
 ```shell
 ligo run dry-run contracts/intezos.jsligo 'unit' '{ amount: 100000 as mutez, receiver: "tz1Yj4FviaKEy6ER8ZDeiH2w2Lx8bapjuJEq" as address, secret: { question: "Do you like Paul", encrypted_answer: "yes he is awesome but encrypted" }, sender: "tz1Yj4FviaKEy6ER8ZDeiH2w2Lx8bapjuJEq" as address, pending: true }' --entry-point claim
@@ -267,19 +242,19 @@ Where :
 - `LIST_EMPTY()`is a list of operations to apply (here empty because we return `list([])`)
 - `record` is the new state of your storage.
 
-If you check on the command, the state of initial storage contains `pending: true` which has mutate to `pending -> False(unit)`
+As you can see, in the command, the state of initial storage is `pending: true`, and in the output, it has been changed to `pending -> False(unit)` as expected.
 
-But use `ligo run dry-run` like this is a bad user experience :
-- The command is not lisible
-- Edit the storage(or parameter) is painful without indentation
-- You need to type the command in one line
-- To re-execute a dry-run you have to find the good command in your bash history
-
+Using `ligo run dry-run` like this is a bad user experience :
+- the command is not readable;
+- editing the storage (or parameters) is painful;
+- you need to type the command in one line; and
+- to re-execute a dry-run you have to find the good command in your bash history.  
+ 
 Let's do some software engineering to have a better way to run dry-run. 
 
-Create a new file `intezos.runner.jsligo` it will be a wrapper around your test to declare some tests data.
+Create a new file `intezos.runner.jsligo` it will be a wrapper around your test used to declare some tests data.
 ```typescript
-// Start by integrate intezos.jsligo into your runner
+// Start by integrating intezos.jsligo into your runner
 #include "./intezos.jsligo"
 
 // Then define a constant corresponding to your initial storage
@@ -300,9 +275,6 @@ Now you can trigger your dry-run like this :
 ```shell
 ligo run dry-run contracts/intezos.runner.jsligo 'Claim(unit)' 'default_storage'
 ```
-
-We will now try to understand the answer of the `dry-run` command : 
-
 
 ### Implements the conditions
 
